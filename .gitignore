@@ -1,0 +1,15 @@
+NOTES.txt
+homehelp.sublime-project
+homehelp.sublime-workspace
+manage.py
+__init__.py
+__pycache__/
+hh_env
+db.sqlite3
+admin.py
+apps.py
+migrations/
+tests.py
+homehelp/
+manage.py
+.DS_Store

@@ -1,0 +1,35 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div>
+	<h2>{{ space }}</h2> 
+	<p>Type: {{space.get_kind_display|title }}</p>
+	<hr>
+	<div>
+		<a href="{% url 'edit_space' space.id %}">Edit Space</a>
+		<a href="{% url 'new_space' space.id %}">Add Space</a>
+		<a href="{% url 'new_item' space.id %}">Add Item</a>
+	</div>
+</div>
+<hr>
+<div>
+	<h4>Items</h4>
+	<hr>
+	{% for item in items %}
+	<div>{{item}}</div>
+	{% empty %}
+	<p>Looks like there's nothing here.</p>
+	{% endfor %}
+</div>
+<hr>
+<div>
+	<h4>Spaces</h4>
+	<hr>
+	{% for s in spaces %}
+	<a href="{% url 'space' s.id %}">{{s}}</a>
+	{% empty %}
+	<div>No Rooms</div>
+	{% endfor %}
+</div>
+<hr>
+{% endblock %}

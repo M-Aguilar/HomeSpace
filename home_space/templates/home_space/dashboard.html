@@ -1,0 +1,20 @@
+{% extends "home_space/base.html" %}
+
+{% block content %}
+<div>
+	<h2>Dashboard</h2>
+</div>
+<hr>
+<h3>Your Spaces</h3>
+<hr>
+{% for space in spaces %}
+	<p><a href="{% url 'space' space.id %}">{{ space }}</a> - {{ space.get_kind_display|title }}</p>
+	<a href="{% url 'new_item' space.id %}">Add Item</a>
+	<a href="{% url 'new_space' space.id %}">Add Space</a>
+	<hr>
+{% empty %}
+	<p>There is nothing here.</p>
+	<hr>
+{% endfor %}
+<a href="{% url 'new_space' %}">Add Space</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div>
+	<p>e.g. TV, Chair, Hammer...</p>
+	<form action="{% url 'new_item' space.id %}" method='post'>
+		{% csrf_token %}
+		{% bootstrap_form form %}
+		<button name="submit">Add Item</button>
+	</form>
+</div>
+{% endblock %}
