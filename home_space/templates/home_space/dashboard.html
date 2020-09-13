@@ -1,5 +1,5 @@
 {% extends "home_space/base.html" %}
-
+{% load bootstrap4 %}
 {% block content %}
 <div>
 	<h2>Dashboard</h2>
@@ -7,14 +7,34 @@
 <hr>
 <h3>Your Spaces</h3>
 <hr>
-{% for space in spaces %}
-	<p><a href="{% url 'space' space.id %}">{{ space }}</a> - {{ space.get_kind_display|title }}</p>
-	<a href="{% url 'new_item' space.id %}">Add Item</a>
-	<a href="{% url 'new_space' space.id %}">Add Space</a>
-	<hr>
-{% empty %}
-	<p>There is nothing here.</p>
-	<hr>
-{% endfor %}
-<a href="{% url 'new_space' %}">Add Space</a>
+{% if spaces %}
+	{% for space in spaces %}
+		{% with space.get_kind_display as k %}
+		<p>
+			{% if k == 'home'%}
+			<i class="glyphicon glyphicon-home"></i>
+			{% elif k == 'inventory' %}
+			{% if space.super_space %} {{space.super_space}} <i class="glyphicon glyphicon-arrow-right"></i> {% endif %}
+			<i class="glyphicon glyphicon-briefcase"></i>
+			{% elif k == 'room' %}
+			{% if space.super_space %} {{space.super_space}} <i class="glyphicon glyphicon-arrow-right"></i> {% endif %}
+			<i class="glyphicon glyphicon-bed"></i>
+			{% endif %}
+			<a href="{% url 'space' space.id %}">
+			{{ space }}</a>
+		</p>
+		{% if k == 'inventory' %}
+		<a href ="{% url 'new_food' space.id %}">Add Food</a>
+		{% else %}
+		<a href="{% url 'new_space' space.id %}">Add Space</a>
+		{% endif %}
+		<a href="{% url 'new_item' space.id %}">Add Item</a>
+		<hr>
+		{% endwith %}
+	{% empty %}
+		<p>There is nothing here.</p>
+		<hr>
+	{% endfor %}
+	<a href="{% url 'new_space' %}">Add Space</a>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<h2>New Recipe</h2>
+<div>
+	<form action="{% url 'new_recipe' %}" method='post'>
+		{% csrf_token %}
+		{% bootstrap_form form %}
+		<button name="submit">Add Recipe</button>
+	</form>
+		<form action="{% url 'new_ingredient' %}" method='post'>
+		{% csrf_token %}
+		{% bootstrap_form i_form %}
+		<button name="submit">Add Ingredient</button>
+	</form>
+</div>
+{% endblock %}

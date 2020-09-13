@@ -1,0 +1,14 @@
+{% extends "home_space/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+<h2>Recipes</h2>
+{% for recipe in recipes %}
+{{ recipe }}
+{% empty %}
+<p>There is nothing here.</p>
+{% endfor %}
+{% if request.user.is_authenticated %}
+<a href="{% url 'new_recipe' %}">Add Recipe</a>
+{% endif %}
+{% endblock %}
