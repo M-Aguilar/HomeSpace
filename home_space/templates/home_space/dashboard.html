@@ -1,40 +1,33 @@
 {% extends "home_space/base.html" %}
 {% load bootstrap4 %}
 {% block content %}
-<div>
-	<h2>Dashboard</h2>
-</div>
-<hr>
-<h3>Your Spaces</h3>
-<hr>
-{% if spaces %}
-	{% for space in spaces %}
-		{% with space.get_kind_display as k %}
-		<p>
-			{% if k == 'home'%}
-			<i class="glyphicon glyphicon-home"></i>
-			{% elif k == 'inventory' %}
-			{% if space.super_space %} {{space.super_space}} <i class="glyphicon glyphicon-arrow-right"></i> {% endif %}
-			<i class="glyphicon glyphicon-briefcase"></i>
-			{% elif k == 'room' %}
-			{% if space.super_space %} {{space.super_space}} <i class="glyphicon glyphicon-arrow-right"></i> {% endif %}
-			<i class="glyphicon glyphicon-bed"></i>
-			{% endif %}
-			<a href="{% url 'space' space.id %}">
-			{{ space }}</a>
-		</p>
-		{% if k == 'inventory' %}
-		<a href ="{% url 'new_food' space.id %}">Add Food</a>
-		{% else %}
-		<a href="{% url 'new_space' space.id %}">Add Space</a>
-		{% endif %}
-		<a href="{% url 'new_item' space.id %}">Add Item</a>
-		<hr>
-		{% endwith %}
-	{% empty %}
-		<p>There is nothing here.</p>
-		<hr>
+{% if homes %}
+	{% for home in homes %}
+		<h2>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
+		<div class='rooms'>
+		{% for room in home.room_set.all %}
+			{% include 'home_space/room_tile.html' %}
+		{% empty %}
+			<p>There is nothing here.</p>
+			<hr>
+		{% endfor %}
+		</div>
+		<div>
+			<form action="{% url 'new_room' home.id %}" method='post'>
+				{% csrf_token %}
+				{% bootstrap_form room_form %}
+				<button name="submit">Add Room</button>
+			</form>
+		</div>
 	{% endfor %}
-	<a href="{% url 'new_space' %}">Add Space</a>
+{% else %}
+	<h3>There is no home setup yet. Add one here</a></h3>
+	<div>
+		<form action="{% url 'new_home' %}" method='post'>
+			{% csrf_token %}
+			{% bootstrap_form home_form %}
+			<button name="submit">Add Home</button>
+		</form>
+	</div>
 {% endif %}
 {% endblock %}

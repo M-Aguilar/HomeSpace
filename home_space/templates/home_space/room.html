@@ -1,0 +1,34 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div>
+	<h2>{{ room }}{% if room.inventory_set.first.holds_food %} <i class="glyphicon glyphicon-cutlery"></i>{% endif %}</h2>
+	<p></p>
+	<hr>
+	<div>
+		<a href="{% url 'edit_room' room.id %}"><i class="glyphicon glyphicon-edit"></i> Edit Room</a>
+		<a href="{% url 'new_item' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
+		{% if room.inventory_set.first.holds_food %}
+		<a href="{% url 'new_food' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
+		{% endif %}
+		<a href="{% url 'delete_room' room.id %}"><i class="glyphicon glyphicon-trash"></i> Delete Room</a>
+	</div>
+	<div>
+		{% for inv in room.inventory_set.all %}
+		<div>{{ inv }} Inventory</div>
+		<ul>
+			{% if room.inventory_set.first.holds_food %}
+				{% for item in inv.food_set.all %}
+					<li>{{ item }}</li>
+				{% endfor %}
+			{% endif %}
+			{% for item in inv.item_set.all %}
+				<li>{{ item }}</li>
+			{% endfor %}
+		</ul>
+		{% empty %}
+		<div>There is nothing here</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

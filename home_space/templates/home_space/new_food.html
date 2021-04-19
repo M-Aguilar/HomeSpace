@@ -3,7 +3,7 @@
 {% block content %}
 <div>
 	<p>e.g. Tomato, Potato, Corn...</p>
-	<form action="{% url 'new_food' space.id %}" method='post'>
+	<form action="{% url 'new_food' inventory.id %}" method='post'>
 		{% csrf_token %}
 		{% bootstrap_form form %}
 		<button name="submit">Add Food</button>

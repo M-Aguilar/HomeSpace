@@ -2,10 +2,10 @@
 {% load bootstrap4 %}
 {% block content %}
 <div>
-	<h3>Edit {{ space }}</h3>
-	<form action="{% url 'edit_space' space.id %}" method='post'>
+	<h3>Edit {{ room }}</h3>
+	<form action="{% url 'edit_room' room.id %}" method='post'>
 		{% csrf_token %}
-		{% bootstrap_form form %}
+		{{ form.as_p }}
 		<button name="submit">Update</button>
 	</form>
 </div>

@@ -1,0 +1,8 @@
+<div>
+	<p>e.g. TV, Chair, Hammer...</p>
+	<form action="{% url 'new_item' inventory.id %}" method='post'>
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button name="submit">Add Item</button>
+	</form>
+</div>

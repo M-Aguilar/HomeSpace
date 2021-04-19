@@ -7,18 +7,19 @@ urlpatterns = [
     path('dashboard',views.dashboard,name='dashboard'),
 
     #SPACE PAGES
-    path('space/<space>',views.space,name='space'),
-    path('new_space',views.new_space,name='new_space'),
-    path('<space>/new_space', views.new_space,name='new_space'),
-    path('edit/<space>',views.edit_space,name='edit_space'),
+    path('new_home', views.new_home, name='new_home'),
+    path('<home_id>/new_room', views.new_room, name='new_room'),
+    path('<room_id>/edit', views.edit_room, name='edit_room'),
+    path('room/<room_id>', views.room, name='room'),
+    path('room/<room_id>/delete', views.delete_room, name='delete_room'),
 
     #ITEM
-    path('<space>/new_item',views.new_item,name='new_item'),
+    path('<inventory_id>/new_item',views.new_item,name='new_item'),
     path('edit_item/<item>',views.edit_item,name='edit_item'),
     path('<item>/delete',views.delete_item,name='delete_item'),
 
     #FOOD
-    path('<space>/new_food',views.new_food,name='new_food'),
+    path('<inventory_id>/new_food',views.new_food,name='new_food'),
     path('edit/<food>',views.edit_food ,name='edit_food'),
 
     #RECIPES

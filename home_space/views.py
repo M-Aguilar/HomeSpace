@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Space, Item, Food, Recipe, Ingredient
-from .forms import SpaceForm, ItemForm, FoodForm, RecipeForm, IngredientForm
+from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND
+from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
-# Create your views here.
+
 def index(request):
 	if request.user.is_authenticated:
 		response = redirect('dashboard')
@@ -15,57 +15,74 @@ def index(request):
 
 @login_required
 def dashboard(request):
-	spaces = Space.objects.filter(owner=request.user)
-	context = {'spaces':spaces}
+	homes = Home.objects.filter(owner=request.user)
+	context = {'homes':homes}
+	if not homes:
+		context['home_form'] = HomeForm()
+	else:
+		context['room_form'] = RoomForm()
 	return render(request, 'home_space/dashboard.html', context)
-
-'''TODO: Suggest spaces if none are present.
-Another possibility if this gains enough traction is to limit spaces of type home. 
-That typing would not allow for a super-space
-'''
 
 #------------------------SPACES------------------------
 def about(request):
 	return render(request,'home_space/about.html')
 
 @login_required
-def space(request, space):
-	space = get_object_or_404(Space,id=space)
-	spaces = Space.objects.filter(super_space=space)
-	items = Item.objects.filter(space=space)
-	if space.owner != request.user:
+def room(request, room_id):
+	space = get_object_or_404(Room,id=room_id)
+	if space.home.owner != request.user:
 		raise Http404
-	context = {'space': space,'items':items,'spaces':spaces}
-	return render(request,'home_space/space.html',context)
+	context = {'room': space}
+	return render(request,'home_space/room.html', context)
 
 @login_required
-def new_space(request, space=''):
-	if request.method != 'POST':
-		form = SpaceForm(initial={'super_space':space})
-	else:
-		form = SpaceForm(data=request.POST)
+def new_home(request):
+	if request.method == 'POST':
+		form = HomeForm(data=request.POST)
 		if form.is_valid():
 			new_space = form.save(commit=False)
 			new_space.owner = request.user
 			new_space.save()
 			return HttpResponseRedirect(reverse('dashboard'))
-	context = {'form':form}
-	return render(request, 'home_space/new_space.html',context)
 
 @login_required
-def edit_space(request, space):
-	space = get_object_or_404(Space,id=space)
-	if space.owner != request.user:
+def new_room(request, home_id):
+	home = Home.objects.get(id=home_id)
+	if request.method == 'POST':
+		form = RoomForm(data=request.POST)
+		if form.is_valid():
+			new_space = form.save(commit=False)
+			new_space.home = home
+			new_space.owner = request.user
+			new_space.save()
+			new_inv = Inventory.objects.create(space=new_space, name=new_space.name)
+			if new_space.name in FOOD_STORAGE_IND:
+				new_inv.holds_food = True
+			new_inv.save()
+			return HttpResponseRedirect(reverse('dashboard'))
+
+@login_required
+def delete_room(request, room_id):
+	room = get_object_or_404(Room, id=room_id)
+	if request.user == room.home.owner:
+		room.delete()
+		return HttpResponseRedirect(reverse('dashboard'))
+
+@login_required
+def edit_room(request, room_id):
+	space = get_object_or_404(Room,id=room_id)
+	if space.home.owner != request.user:
 		raise Http404
 	if request.method != 'POST':
-		form = SpaceForm(instance=space)
+		form = RoomForm(instance=space)
 	else:
-		form = SpaceForm(instance=space,data=request.POST)
+		form = RoomForm(instance=space,data=request.POST)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect(reverse('dashboard'))
-	context = {'space':space, 'form':form}
-	return render(request,'home_space/edit_space.html',context)
+	context = {'room':space, 'form':form}
+	return render(request,'home_space/edit_room.html',context)
+
 #------------------------RECIPES------------------------
 def recipes(request):
 	recipes = Recipe.objects.all()
@@ -104,12 +121,13 @@ def new_ingredient(request,recipe):
 			return HttpResponseRedirect(reverse('recipes'))
 	context = {'form':form}
 	return render(request,'home_space/new_ingredient.html',context)
+
 #------------------------FOOD------------------------
 @login_required
-def new_food(request, space):
-	space = Space.objects.get(id=space)
+def new_food(request, inventory_id):
+	space = Inventory.objects.get(id=inventory_id)
 	if request.method != 'POST':
-		form = FoodForm(initial={'space':space,'quantity':1})
+		form = FoodForm(initial={'space':space})
 	else:
 		form = FoodForm(data=request.POST)
 		if form.is_valid():
@@ -117,8 +135,8 @@ def new_food(request, space):
 			food.space = space
 			food.save()
 			food.space.save()
-			return HttpResponseRedirect(reverse('space', args=[space.id]))
-	context = {'form':form,'space':space}
+			return HttpResponseRedirect(reverse('room', args=[space.space.id]))
+	context = {'form':form,'inventory':space}
 	return render(request,'home_space/new_food.html',context)
 
 @login_required
@@ -135,21 +153,23 @@ def edit_food(request, food):
 			return HttpResponseRedirect(reverse('space',args=[food.space.id]))
 	context = {'form':form,'food':food}
 	return render(request,'home_space/edit_food.html',context)
+	
 #------------------------ITEMS------------------------
+
 @login_required
-def new_item(request, space):
-	space = Space.objects.get(id=space)
+def new_item(request, inventory_id):
+	space = Inventory.objects.get(id=inventory_id)
 	if request.method != 'POST':
-		form = ItemForm(initial={'space':space,'quantity':1})
+		form = ItemForm(initial={'space':space})
 	else:
 		form = ItemForm(data=request.POST)
 		if form.is_valid():
 			item = form.save(commit=False)
-			item.space = space
+			item.inventory = space
 			item.save()
-			item.space.save()
-			return HttpResponseRedirect(reverse('space', args=[space.id]))
-	context = {'form':form, 'space':space}
+			item.inventory.save()
+			return HttpResponseRedirect(reverse('room', args=[item.inventory.room.id]))
+	context = {'form':form, 'inventory':space}
 	return render(request, 'home_space/new_item.html',context)
 
 def edit_item(request,item):

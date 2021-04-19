@@ -1,12 +1,26 @@
 from django import forms
 
-from .models import Space, Item, Food, Ingredient, Recipe
+from .models import Home, Room, Inventory, Item, Food, Ingredient, Recipe, Step
 
-class SpaceForm(forms.ModelForm):
+class InventoryForm(forms.ModelForm):
 	class Meta:
-		model = Space
-		fields = ['name','super_space', 'kind']
-		labels = {'name': 'Space Name'}
+		model = Inventory
+		fields = ['name']
+		labels = {'name': 'Inventory Name'}
+
+class RoomForm(forms.ModelForm):
+	class Meta:
+		model = Room
+		fields = ['name']
+		labels = {'name': ''}
+
+		widgets = {'name': forms.TextInput(attrs={'placeholder': 'Room Name'})}
+
+class HomeForm(forms.ModelForm):
+	class Meta:
+		model = Home
+		fields = ['name']
+		labels = {'name': 'Home Name'}
 
 		widgets = {'name': forms.TextInput(attrs={'autofocus':'autofocus'})}
 
@@ -14,7 +28,7 @@ class ItemForm(forms.ModelForm):
 	class Meta:
 		model = Item
 		fields = ['name','quantity','space', 'info','bot_date']
-		labels = {'quantity': 'Quantity','space':'Space','bot_date':'Date bought'}
+		labels = {'quantity': 'Quantity','space':'Inventory','bot_date':'Date bought'}
 
 		widgets = {
 			'name': forms.TextInput(attrs={'autofocus':'autofocus'}),
@@ -24,8 +38,8 @@ class ItemForm(forms.ModelForm):
 class FoodForm(forms.ModelForm):
 	class Meta:
 		model = Food
-		fields = ['name','quantity','weight','w_metric','volume','v_metric','exp_date','bot_date']
-		labels = {'weight':'Weight','volume':'Volume','v_metric':'Volume Convention','w_metric':'Weight Convention','exp_date':'Expiration Date','bot_date':'Date Purchased'}
+		fields = ['name','quantity','metric','exp_date','bot_date']
+		labels = {'weight':'Weight', 'exp_date':'Expiration Date','bot_date':'Date Purchased'}
 
 		widgets = {
 			'name': forms.TextInput(attrs={'autofocus':'autofocus'}),
@@ -36,15 +50,26 @@ class FoodForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):
 	class Meta:
 		model = Recipe
-		fields = ['name', 'instructions']
+		fields = ['name'] #,'instructions']
 		labels = {}
 
 		widgets = {
-			'instructions':forms.Textarea(attrs={'placeholder':'Steps go here...'}),
+			'name': forms.TextInput(attrs={'autofocus':'autofocus'}),
+			#'instructions':forms.Textarea(attrs={'placeholder':'Steps go here...'}),
 		}
 
 class IngredientForm(forms.ModelForm):
 	class Meta:
 		model = Ingredient
-		fields = ['name','quantity','weight','w_metric','volume','v_metric']
+		fields = ['name','quantity','metric']
+		labels = {}
+
+		widgets = {
+			'name': forms.TextInput(attrs={'autofocus':'autofocus'}),
+		}
+
+class StepForm(forms.ModelForm):
+	class Meta:
+		model = Step
+		fields = ['instruction', 'step_number']
 		labels = {}
