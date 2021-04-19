@@ -5,8 +5,9 @@
 	<h3>Edit {{ room }}</h3>
 	<form action="{% url 'edit_room' room.id %}" method='post'>
 		{% csrf_token %}
-		{{ form.as_p }}
-		<button name="submit">Update</button>
+		{% bootstrap_form form %}
+		{% bootstrap_form i_form %}
+		<button name="submit" class='btn btn-dark'>Update</button>
 	</form>
 </div>
 {% endblock %}

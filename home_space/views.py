@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND
-from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm
+from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
@@ -23,7 +23,6 @@ def dashboard(request):
 		context['room_form'] = RoomForm()
 	return render(request, 'home_space/dashboard.html', context)
 
-#------------------------SPACES------------------------
 def about(request):
 	return render(request,'home_space/about.html')
 
@@ -32,7 +31,7 @@ def room(request, room_id):
 	space = get_object_or_404(Room,id=room_id)
 	if space.home.owner != request.user:
 		raise Http404
-	context = {'room': space}
+	context = {'room': space, 'i_form': InventoryForm()}
 	return render(request,'home_space/room.html', context)
 
 @login_required
@@ -75,13 +74,27 @@ def edit_room(request, room_id):
 		raise Http404
 	if request.method != 'POST':
 		form = RoomForm(instance=space)
+		i_form = HoldsFoodForm(instance=space.inventory_set.first())
 	else:
 		form = RoomForm(instance=space,data=request.POST)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect(reverse('dashboard'))
-	context = {'room':space, 'form':form}
+	context = {'room':space, 'form':form, 'i_form': i_form}
 	return render(request,'home_space/edit_room.html',context)
+
+@login_required
+def new_inventory(request, room_id):
+	room = get_object_or_404(Room, id=room_id)
+	if room.home.owner == request.user:
+		if request.method =='POST':
+			form  = InventoryForm(data=request.POST)
+			if form.is_valid():
+				new_inv = form.save(commit=False)
+				new_inv.save()
+				return HttpResponseRedirect(reverse('room', args=[room.id]))
+	else:
+		raise Http404
 
 #------------------------RECIPES------------------------
 def recipes(request):

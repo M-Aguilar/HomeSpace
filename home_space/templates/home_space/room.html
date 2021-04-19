@@ -6,6 +6,14 @@
 	<p></p>
 	<hr>
 	<div>
+		<a href='' class='dropdown-toggle d-inline' type='button' id='add_inv' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-briefcase"></i> Add Inventory</a>
+		<div class='dropdown-menu dropdown-menu-left p-2' id='add_inv'>
+			<form action="{% url 'new_inventory' room.id %}" method='post'>
+				{% csrf_token %}
+				{% bootstrap_form i_form %}
+				<button name="submit" class="btn btn-dark">Add Inventory</button>
+			</form>
+		</div>
 		<a href="{% url 'edit_room' room.id %}"><i class="glyphicon glyphicon-edit"></i> Edit Room</a>
 		<a href="{% url 'new_item' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
 		{% if room.inventory_set.first.holds_food %}

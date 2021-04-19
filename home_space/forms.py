@@ -8,6 +8,13 @@ class InventoryForm(forms.ModelForm):
 		fields = ['name']
 		labels = {'name': 'Inventory Name'}
 
+class HoldsFoodForm(forms.ModelForm):
+	class Meta:
+		model = Inventory
+		fields = ['holds_food']
+		labels = {'holds_food': 'Holds Food'}
+		widgets = {'holds_food': forms.CheckboxInput(attrs={'class':'form-check-input'})}
+
 class RoomForm(forms.ModelForm):
 	class Meta:
 		model = Room

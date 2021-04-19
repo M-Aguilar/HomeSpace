@@ -2,9 +2,21 @@
 {% load bootstrap4 %}
 {% block content %}
 {% if homes %}
+	<div>
 	{% for home in homes %}
-		<h2>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
-		<div class='rooms'>
+		<div class='pb-3'>
+			<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
+			<div class='btn btn-dark dropdown-toggle d-inline float-right' type='button' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
+			<div class='dropdown-menu dropdown-menu-right p-2' id='{{home}}_add_room_dd'>
+				<form action="{% url 'new_room' home.id %}" method='post'>
+					{% csrf_token %}
+					{% bootstrap_form room_form %}
+					<button name="submit" class="btn btn-dark">Add Room</button>
+				</form>
+			</div>
+		</div>
+		<hr>
+		<div class='rooms d-flex flex-row'>
 		{% for room in home.room_set.all %}
 			{% include 'home_space/room_tile.html' %}
 		{% empty %}
@@ -12,14 +24,8 @@
 			<hr>
 		{% endfor %}
 		</div>
-		<div>
-			<form action="{% url 'new_room' home.id %}" method='post'>
-				{% csrf_token %}
-				{% bootstrap_form room_form %}
-				<button name="submit">Add Room</button>
-			</form>
-		</div>
 	{% endfor %}
+	</div>
 {% else %}
 	<h3>There is no home setup yet. Add one here</a></h3>
 	<div>
