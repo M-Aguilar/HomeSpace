@@ -1,6 +1,6 @@
 NOTES.txt
-homehelp.sublime-project
-homehelp.sublime-workspace
+*.sublime-project
+*.sublime-workspace
 manage.py
 __init__.py
 __pycache__/
@@ -13,3 +13,4 @@ tests.py
 homehelp/
 manage.py
 .DS_Store
+label/
