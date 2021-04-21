@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Home, Room, Inventory, Item, Food, Ingredient, Recipe, Step
+from .models import Home, Room, Inventory, Item, Food, Ingredient, Recipe, Step, GarageSale
 
 class InventoryForm(forms.ModelForm):
 	class Meta:
@@ -80,3 +80,8 @@ class StepForm(forms.ModelForm):
 		model = Step
 		fields = ['instruction', 'step_number']
 		labels = {}
+
+class GarageSaleForm(forms.ModelForm):
+	class Meta:
+		model = GarageSale
+		fields = ['name']

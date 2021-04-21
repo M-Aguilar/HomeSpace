@@ -21,19 +21,9 @@
 		{% endif %}
 		<a href="{% url 'delete_room' room.id %}"><i class="glyphicon glyphicon-trash"></i> Delete Room</a>
 	</div>
-	<div>
+	<div class='rooms d-flex flex-row'>
 		{% for inv in room.inventory_set.all %}
-		<div>{{ inv }} Inventory</div>
-		<ul>
-			{% if room.inventory_set.first.holds_food %}
-				{% for item in inv.food_set.all %}
-					<li>{{ item }}</li>
-				{% endfor %}
-			{% endif %}
-			{% for item in inv.item_set.all %}
-				<li>{{ item }}</li>
-			{% endfor %}
-		</ul>
+			{% include 'home_space/inventory_tile.html' %}
 		{% empty %}
 		<div>There is nothing here</div>
 		{% endfor %}

@@ -12,9 +12,12 @@ urlpatterns = [
     path('<room_id>/edit', views.edit_room, name='edit_room'),
     path('room/<room_id>', views.room, name='room'),
     path('room/<room_id>/delete', views.delete_room, name='delete_room'),
-
     path('room/<room_id>/add_inventory', views.new_inventory, name='new_inventory'),
-    #ITEM
+
+    path('inventory/<inventory_id>', views.inventory, name='inventory'),
+
+    path('new_garage_sale', views.new_garage_sale, name='new_garage_sale'),
+
     path('<inventory_id>/new_item',views.new_item,name='new_item'),
     path('edit_item/<item>',views.edit_item,name='edit_item'),
     path('<item>/delete',views.delete_item,name='delete_item'),

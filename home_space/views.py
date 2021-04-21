@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND
-from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm
+from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm, GarageSaleForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
@@ -54,7 +54,7 @@ def new_room(request, home_id):
 			new_space.home = home
 			new_space.owner = request.user
 			new_space.save()
-			new_inv = Inventory.objects.create(space=new_space, name=new_space.name)
+			new_inv = Inventory.objects.create(space=new_space, name='{0} Inventory'.format(new_space.name))
 			if new_space.name in FOOD_STORAGE_IND:
 				new_inv.holds_food = True
 			new_inv.save()
@@ -84,6 +84,14 @@ def edit_room(request, room_id):
 	return render(request,'home_space/edit_room.html',context)
 
 @login_required
+def inventory(request, inventory_id):
+	inv = get_object_or_404(Inventory, id=inventory_id)
+	if request.user != inv.space.home.owner:
+		raise Http404
+	context = {'inv': inv}
+	return render(request, 'home_space/inventory.html', context)
+
+@login_required
 def new_inventory(request, room_id):
 	room = get_object_or_404(Room, id=room_id)
 	if room.home.owner == request.user:
@@ -91,6 +99,7 @@ def new_inventory(request, room_id):
 			form  = InventoryForm(data=request.POST)
 			if form.is_valid():
 				new_inv = form.save(commit=False)
+				new_inv.space = room
 				new_inv.save()
 				return HttpResponseRedirect(reverse('room', args=[room.id]))
 	else:
@@ -209,3 +218,7 @@ def delete_item(request, item):
 		item.delete()
 		return HttpResponseRedirect(reverse('space',args=[space]))
 
+def new_garage_sale(request):
+	form = GarageSaleForm()
+	context = {'form': form}
+	return render(request, 'home_space/new_garage_sale.html', context)

@@ -1,0 +1,9 @@
+{% load bootstrap4 %}
+<div>
+	<p>e.g. TV, Chair, Hammer...</p>
+	<form action="{% url 'new_garage_sale' %}" method='post'>
+		{% csrf_token %}
+		{% bootstrap_form form %}
+		<button name="submit" class='btn btn-dark'>Add Item</button>
+	</form>
+</div>

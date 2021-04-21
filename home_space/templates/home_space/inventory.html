@@ -1,0 +1,23 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <h4>{{ inv }}</h4>
+    <a href="{% url 'new_item' inv.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
+    {% if inv.holds_food %}
+    <a href="{% url 'new_food' inv.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
+    {% endif %}
+    <div class='rooms d-flex flex-row'>
+		{% for item in inv.item_set.all %}
+			{{ item }}
+		{% empty %}
+		<div>There is nothing here</div>
+		{% endfor %}
+        {% if inv.holds_food %}
+        	{% for food in inv.food_set.all %}
+			    {{ food }}
+	    	{% empty %}
+		    <div>There is nothing here</div>
+		    {% endfor %}
+        {% endif %}
+	</div>
+{% endblock %}

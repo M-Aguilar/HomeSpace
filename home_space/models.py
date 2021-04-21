@@ -161,3 +161,12 @@ class Food(FoodInfo, Info):
 class FoodImage(models.Model):
 	item = models.ForeignKey(Food, on_delete=models.CASCADE)
 	image = models.ImageField(upload_to=user_directory_path, blank=True,  null=True)
+
+class GarageSale(models.Model):
+	name = models.CharField(max_length=50)
+	start_date = models.DateField(blank=True, null=True)
+	end_date = models.DateField(blank=True, null=True)
+
+class ForSell(models.Model):
+	vendor = models.ForeignKey(GarageSale, on_delete=models.CASCADE)
+	item = models.ForeignKey(Item, on_delete=models.CASCADE)
