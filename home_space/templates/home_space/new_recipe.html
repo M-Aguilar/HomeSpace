@@ -6,12 +6,12 @@
 	<form action="{% url 'new_recipe' %}" method='post'>
 		{% csrf_token %}
 		{% bootstrap_form form %}
-		<button name="submit">Add Recipe</button>
+		<button class='btn btn-dark' name="submit">Add Recipe</button>
 	</form>
 		<form action="{% url 'new_ingredient' %}" method='post'>
 		{% csrf_token %}
 		{% bootstrap_form i_form %}
-		<button name="submit">Add Ingredient</button>
+		<button class='btn btn-dark' name="submit">Add Ingredient</button>
 	</form>
 </div>
 {% endblock %}

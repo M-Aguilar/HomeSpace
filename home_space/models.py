@@ -163,10 +163,14 @@ class FoodImage(models.Model):
 	image = models.ImageField(upload_to=user_directory_path, blank=True,  null=True)
 
 class GarageSale(models.Model):
+	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=50)
 	start_date = models.DateField(blank=True, null=True)
 	end_date = models.DateField(blank=True, null=True)
 
-class ForSell(models.Model):
+	def __str__(self):
+		return self.name
+
+class ForSale(models.Model):
 	vendor = models.ForeignKey(GarageSale, on_delete=models.CASCADE)
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)

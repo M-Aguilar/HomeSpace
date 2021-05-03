@@ -1,9 +1,13 @@
+{% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
+{% block content %}
 <div>
-	<p>e.g. TV, Chair, Hammer...</p>
+	<h2>Garage Sale.</h2>
+	<p>What shall we call it?</p>
 	<form action="{% url 'new_garage_sale' %}" method='post'>
 		{% csrf_token %}
 		{% bootstrap_form form %}
-		<button name="submit" class='btn btn-dark'>Add Item</button>
+		<button name="submit" class='btn btn-dark'>Create Garage Sale</button>
 	</form>
 </div>
+{% endblock %}

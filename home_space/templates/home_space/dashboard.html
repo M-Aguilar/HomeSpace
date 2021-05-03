@@ -4,9 +4,9 @@
 {% if homes %}
 	<div>
 	{% for home in homes %}
-		<div class='pb-3'>
+		<div class='pb-3 d-inline'>
 			<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
-			<div class='btn btn-dark dropdown-toggle d-inline float-right' type='button' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
+			<div class='btn btn-dark dropdown-toggle float-right ml-2' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
 			<div class='dropdown-menu dropdown-menu-right p-2' id='{{home}}_add_room_dd'>
 				<form action="{% url 'new_room' home.id %}" method='post'>
 					{% csrf_token %}
@@ -14,7 +14,7 @@
 					<button name="submit" class="btn btn-dark">Add Room</button>
 				</form>
 			</div>
-			<a href="{% url 'new_garage_sale' %}"><div class='btn btn-dark float-right mr-3'>Garage Sale +</div></a>
+			<a href="{% url 'new_garage_sale' %}"><div class='btn btn-dark float-right'>Garage Sale +</div></a>
 		</div>
 		<hr>
 		<div class='rooms d-flex flex-row'>

@@ -84,4 +84,11 @@ class StepForm(forms.ModelForm):
 class GarageSaleForm(forms.ModelForm):
 	class Meta:
 		model = GarageSale
-		fields = ['name']
+		fields = ['name', 'start_date', 'end_date']
+		labels = {'name':'','start_date':'', 'end_date':''}
+
+		widgets = {
+			'name': forms.TextInput(attrs={'placeholder': 'Name'}),
+			'start_date': forms.DateInput(attrs={'placeholder':'Start Date'}),
+			'end_date': forms.DateInput(attrs={'placeholder':'End Date'})
+		}

@@ -9,6 +9,6 @@
 <p>There is nothing here.</p>
 {% endfor %}
 {% if request.user.is_authenticated %}
-<a href="{% url 'new_recipe' %}">Add Recipe</a>
+    <a class='btn btn-dark' href="{% url 'new_recipe' %}">Add Recipe</a>
 {% endif %}
 {% endblock %}

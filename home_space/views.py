@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND
+from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND, GarageSale
 from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm, GarageSaleForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 
-from django.http import HttpResponseRedirect, Http404
+from django.core import serializers
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
 
 def index(request):
@@ -218,7 +220,64 @@ def delete_item(request, item):
 		item.delete()
 		return HttpResponseRedirect(reverse('space',args=[space]))
 
+@login_required
 def new_garage_sale(request):
-	form = GarageSaleForm()
+	if request.user.is_authenticated:
+		if request.method != 'POST':
+			form = GarageSaleForm()
+		else:
+			form = GarageSaleForm(data=request.POST)
+			if form.is_valid():
+				sale = form.save(commit=False)
+				sale.owner = request.user
+				form.save()
+				return HttpResponseRedirect(reverse('garage_sale', args=[sale.id]))
+	else:
+		raise Http404
 	context = {'form': form}
 	return render(request, 'home_space/new_garage_sale.html', context)
+
+def garage_sales(request):
+	sales = GarageSale.objects.all()
+	context = {'sales':sales}
+	return render(request, 'home_space/garage_sales.html', context)
+
+@login_required
+def garage_sale(request, sale_id):
+	if request.user.is_authenticated:
+		sale = get_object_or_404(GarageSale, id=sale_id)
+	else:
+		raise Http404
+	context = {'sale': sale, 'item_form': GarageSaleForm(instance=sale)}
+	return render(request, 'home_space/garage_sale.html', context)
+
+@login_required
+def add_item(request, sale_id):
+	sale = get_object_or_404(GarageSale, id='sale_id')
+	if request.is_ajax() and request.user == sale.owner:
+		return HttpResponseRedirect(reverse('index'))
+
+@login_required
+def edit_sale(request, sale_id):
+	if request.user.is_authenticated:
+		sale = get_object_or_404(GarageSale, id=sale_id)
+		if request.method != 'POST':
+			form = GarageSaleForm(instance=sale)
+		else:
+			form = GarageSaleForm(data=request.POST)
+			if form.is_valid():
+				form.save()
+				return HttpResponseRedirect(reverse('garage_sale', args=[sale.id]))
+	else:
+		raise Http404
+	context = {'form': form, 'sale': sale}
+	return render(request, 'home_space/edit_sale.html', context)
+
+@login_required
+def delete_sale(request, sale_id):
+	sale = get_object_or_404(GarageSale, id=sale_id)
+	if request.user.is_authenticated and request.user == sale.owener:
+		sale.delete()
+		return HttpResponseRedirect(reverse('garage_sales'))
+	else:
+		raise Http404

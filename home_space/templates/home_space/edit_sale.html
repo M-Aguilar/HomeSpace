@@ -1,0 +1,12 @@
+{% extends 'home_space/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div>
+    <h2>Edit {{ sale }}</h2>
+    <form action="{% url 'edit_sale' sale.id %}" mothod='post'>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class='btn btn-dark' name='submit'>Submit</div>
+    </form>
+</div>
+{% endblock %}

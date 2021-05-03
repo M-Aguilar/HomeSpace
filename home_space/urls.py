@@ -17,6 +17,10 @@ urlpatterns = [
     path('inventory/<inventory_id>', views.inventory, name='inventory'),
 
     path('new_garage_sale', views.new_garage_sale, name='new_garage_sale'),
+    path('garage_sales', views.garage_sales, name='garage_sales'),
+    path('garage_sale/<sale_id>', views.garage_sale, name='garage_sale'),
+    path('edit_sale/<sale_id>', views.edit_sale, name='edit_sale'),
+    path('garage_sale/<sale_id>/add_item', views.add_item, name='add_item'),
 
     path('<inventory_id>/new_item',views.new_item,name='new_item'),
     path('edit_item/<item>',views.edit_item,name='edit_item'),
