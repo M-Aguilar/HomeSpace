@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from django.template.loader import render_to_string
 from django.core import serializers
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
@@ -192,7 +193,7 @@ def new_item(request, inventory_id):
 			item.inventory = space
 			item.save()
 			item.inventory.save()
-			return HttpResponseRedirect(reverse('room', args=[item.inventory.room.id]))
+			return HttpResponseRedirect(reverse('room', args=[item.inventory.space.id]))
 	context = {'form':form, 'inventory':space}
 	return render(request, 'home_space/new_item.html',context)
 
@@ -250,6 +251,14 @@ def garage_sale(request, sale_id):
 		raise Http404
 	context = {'sale': sale, 'item_form': GarageSaleForm(instance=sale)}
 	return render(request, 'home_space/garage_sale.html', context)
+
+@login_required
+def get_items(request):
+	if request.user.is_authenticated and request.is_ajax():
+		items = Item.objects.filter(space__space__home__owner__id=request.user.id)
+		html = render_to_string(template_name='home_space/item_search_inject.html', context={'items':items})
+		data = {"item_results_view":html}
+		return JsonResponse(data=data, safe=False)
 
 @login_required
 def add_item(request, sale_id):

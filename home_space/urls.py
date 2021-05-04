@@ -26,6 +26,8 @@ urlpatterns = [
     path('edit_item/<item>',views.edit_item,name='edit_item'),
     path('<item>/delete',views.delete_item,name='delete_item'),
 
+    path('item_results', views.get_items, name='item_results'),
+
     #FOOD
     path('<inventory_id>/new_food',views.new_food,name='new_food'),
     path('edit/<food>',views.edit_food ,name='edit_food'),

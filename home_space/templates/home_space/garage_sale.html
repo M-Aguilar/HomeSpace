@@ -7,10 +7,10 @@
         <a href="{% url 'edit_sale' sale.id %}" class="btn btn-dark">Edit Sale</a>
         <div class='btn btn-dark dropdown-toggle float-right ml-2' id='add_item' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Item</div>
         <div class='dropdown-menu dropdown-menu-right p-2' id='add_item'>
-            <form action="" method='post' id='item_form'>
-                {% csrf_token %}
-                <input id="item_search" type="text" name="item_search">
-            </form>
+            <input id="item_search" type="text" name="item_search">
+            <ul id="item_results" class="list-group">
+                {% include 'home_space/item_search_inject.html' %}
+            </ul>
         </div>
     {% endif %}
     <div id="item_list">
@@ -25,6 +25,8 @@
     {% endfor %}
     </div>
 </div>
+{% load static %}
+<script type="text/javascript" src="{% static 'home_space/item_search.js' %}"></script>
 <script>
 	$("#item_form").submit(function (e) {
         e.preventDefault();
