@@ -289,9 +289,21 @@ def add_item(request, sale_id, item_id):
 
 @login_required
 def new_item_image(request, item_id):
+	item = get_object_or_404(Item, id=item_id)
 	if request.method != 'POST':
-		form = ItemImageForm()
-	context = {}
+		data={'item':item}
+		form = ItemImageForm(initial=data)
+	else:
+		form = ItemImageForm(data=request.POST)
+		if form.is_valid():
+			new_image = form.save(commit=False)
+			new_image.item = item
+			new_image.save()
+			new_image.image = request.FILES['image']
+			new_image.save()
+			messages.success(request, 'The Image has been added')
+			return HttpResponseRedirect(reverse('item', args=[item.id]))
+	context = {'form':form, 'item': item}
 	return render(request, 'home_space/new_item_image.html', context)
 
 @login_required
