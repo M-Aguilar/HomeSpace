@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND, GarageSale
-from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm, GarageSaleForm
+from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND, GarageSale, ForSale
+from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm, GarageSaleForm, ItemImageForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -108,7 +108,7 @@ def new_inventory(request, room_id):
 	else:
 		raise Http404
 
-#------------------------RECIPES------------------------
+#------------------------ RECIPES ------------------------
 def recipes(request):
 	recipes = Recipe.objects.all()
 	context={'recipe':recipes}
@@ -147,7 +147,7 @@ def new_ingredient(request,recipe):
 	context = {'form':form}
 	return render(request,'home_space/new_ingredient.html',context)
 
-#------------------------FOOD------------------------
+#------------------------ FOOD ------------------------
 @login_required
 def new_food(request, inventory_id):
 	space = Inventory.objects.get(id=inventory_id)
@@ -177,9 +177,17 @@ def edit_food(request, food):
 			form.save()
 			return HttpResponseRedirect(reverse('space',args=[food.space.id]))
 	context = {'form':form,'food':food}
-	return render(request,'home_space/edit_food.html',context)
+	return render(request,'home_space/edit_food.html', context)
 	
-#------------------------ITEMS------------------------
+#------------------------ ITEMS ------------------------
+
+def item(request, item_id):
+	item = get_object_or_404(Item, id=item_id)
+	forsale = item.forsale_set.all()
+	if request.user != item.space.space.home.owner and not forsale:
+		raise Http404
+	context = {'item':item,'forsale':forsale}
+	return render(request, 'home_space/item.html', context)
 
 @login_required
 def new_item(request, inventory_id):
@@ -196,7 +204,8 @@ def new_item(request, inventory_id):
 			return HttpResponseRedirect(reverse('room', args=[item.inventory.space.id]))
 	context = {'form':form, 'inventory':space}
 	return render(request, 'home_space/new_item.html',context)
-
+	
+@login_required
 def edit_item(request,item):
 	item = get_object_or_404(Item,id=item)
 	if item.space.owner != request.user:
@@ -245,11 +254,12 @@ def garage_sales(request):
 
 @login_required
 def garage_sale(request, sale_id):
+	items = Item.objects.filter(space__space__home__owner=request.user, forsale=None)[:5]
 	if request.user.is_authenticated:
 		sale = get_object_or_404(GarageSale, id=sale_id)
 	else:
 		raise Http404
-	context = {'sale': sale, 'item_form': GarageSaleForm(instance=sale)}
+	context = {'sale': sale, 'item_form': GarageSaleForm(instance=sale), 'items':items}
 	return render(request, 'home_space/garage_sale.html', context)
 
 @login_required
@@ -261,10 +271,28 @@ def get_items(request):
 		return JsonResponse(data=data, safe=False)
 
 @login_required
-def add_item(request, sale_id):
-	sale = get_object_or_404(GarageSale, id='sale_id')
+def add_item(request, sale_id, item_id):
+	sale = get_object_or_404(GarageSale, id=sale_id)
+	item = get_object_or_404(Item, id=item_id)
 	if request.is_ajax() and request.user == sale.owner:
-		return HttpResponseRedirect(reverse('index'))
+		if item.forsale_set.all():
+			messages.error(request, "This item is already for sale.")
+			return JsonResponse({"error":""}, status=400)
+		else:
+			new_sale = ForSale.objects.create(vendor=sale, item=item)
+			new_sale.save()
+			url = reverse('item', args=[item.id])
+			serialized = serializers.serialize('json', [ item,])
+			return JsonResponse({"item":serialized, "url": url},status=200)
+	else:
+		return JsonResponse({"error":""}, status=400)
+
+@login_required
+def new_item_image(request, item_id):
+	if request.method != 'POST':
+		form = ItemImageForm()
+	context = {}
+	return render(request, 'home_space/new_item_image.html', context)
 
 @login_required
 def edit_sale(request, sale_id):

@@ -2,19 +2,21 @@
 {% load bootstrap4 %}
 {% block content %}
     <h4>{{ inv }}</h4>
-    <a href="{% url 'new_item' inv.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
+    <a class="btn btn-dark" href="{% url 'new_item' inv.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
     {% if inv.holds_food %}
-    <a href="{% url 'new_food' inv.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
+    <a class="btn btn-dark" href="{% url 'new_food' inv.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
     {% endif %}
-    <div class='rooms d-flex flex-row'>
+    <div class='rooms d-flex flex-row mt-3'>
 		{% for item in inv.item_set.all %}
-			{{ item }}
+		<div class="card col-3 p-0">
+			<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+		</div>
 		{% empty %}
 		<div>There is nothing here</div>
 		{% endfor %}
         {% if inv.holds_food %}
         	{% for food in inv.food_set.all %}
-			    {{ food }}
+			{{ food }}
 	    	{% empty %}
 		    <div>There is nothing here</div>
 		    {% endfor %}

@@ -14,5 +14,5 @@ homehelp/
 manage.py
 .DS_Store
 label/
-static/
 .vscode/
+static/

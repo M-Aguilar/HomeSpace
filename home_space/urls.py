@@ -20,11 +20,14 @@ urlpatterns = [
     path('garage_sales', views.garage_sales, name='garage_sales'),
     path('garage_sale/<sale_id>', views.garage_sale, name='garage_sale'),
     path('edit_sale/<sale_id>', views.edit_sale, name='edit_sale'),
-    path('garage_sale/<sale_id>/add_item', views.add_item, name='add_item'),
+    path('garage_sale/<sale_id>/<item_id>', views.add_item, name='add_item'),
 
     path('<inventory_id>/new_item',views.new_item,name='new_item'),
     path('edit_item/<item>',views.edit_item,name='edit_item'),
     path('<item>/delete',views.delete_item,name='delete_item'),
+
+    path('item/<item_id>', views.item, name='item'),
+    path('item/<item_id>/new_item_image', views.new_item_image, name='new_item_image'),
 
     path('item_results', views.get_items, name='item_results'),
 

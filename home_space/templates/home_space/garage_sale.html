@@ -13,11 +13,13 @@
             </ul>
         </div>
     {% endif %}
-    <div id="item_list">
-    {% for item in sale.item_set.all %}
-        <div class='card'>
-            <div class='card-body'>
-                <p>{{ item }}</p>
+    <div id="item_list" class="d-flex row mt-3">
+    {% for item in sale.forsale_set.all %}
+        <div class='col-3 mt-3'>
+            <div class='card'>
+                <div class='card-body'>
+                    <a href="{% url 'item' item.item.id %}">{{ item.item }}</a>
+                </div>
             </div>
         </div>
     {% empty %}
@@ -28,26 +30,30 @@
 {% load static %}
 <script type="text/javascript" src="{% static 'home_space/item_search.js' %}"></script>
 <script>
-	$("#item_form").submit(function (e) {
-        e.preventDefault();
-        var serializedData = $(this).serialize();
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'add_item' sale.id %}",
-            data: serializedData,
-            success: function (response) {
-                $("#item_form").trigger('reset');
-                $("#item_form").focus();
-                var instance = JSON.parse(response["instance"]);
-                var fields = instance[0]["fields"];
-                var pk = instance[0]["pk"];
-                alert(response["responseJSON"]["success"]);
-            },
+        $("#item_results").on('click', "a#add_item", function (e) {
+			e.preventDefault();
+			$.ajax({
+				type: 'GET',
+				url: $(this).attr("href"),
+				success: function (response) {
+					var instance = JSON.parse(response["item"]);
+                    var url = response["url"];
+                    $('#item_results').empty();
+					$('#item_list').prepend(`
+                    <div class='col-3 mt-3'>
+                        <div class='card'>
+                            <div class='card-body'>
+                                <a href="${url}">${instance[0]["fields"]["name"]}</a>
+                            </div>
+                        </div>
+                    </div>
+                    `);
+				},
 
-            error: function (response) {
-                alert(response["responseJSON"]["error"]);
-            }
-        })
-    });
+				error: function (response) {
+					alert(response["responseJSON"]["error"]);
+				}
+			})
+		})
 </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Home, Room, Inventory, Item, Food, Ingredient, Recipe, Step, GarageSale
+from .models import Home, Room, Inventory, Item, Food, Ingredient, Recipe, Step, GarageSale, ItemImage
 
 class InventoryForm(forms.ModelForm):
 	class Meta:
@@ -74,6 +74,11 @@ class IngredientForm(forms.ModelForm):
 		widgets = {
 			'name': forms.TextInput(attrs={'autofocus':'autofocus'}),
 		}
+
+class ItemImageForm(forms.ModelForm):
+	class Meta:
+		model = ItemImage
+		fields = ['image']
 
 class StepForm(forms.ModelForm):
 	class Meta:
