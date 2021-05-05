@@ -6,6 +6,7 @@
 	{% for home in homes %}
 		<div class='pb-3 d-inline'>
 			<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
+			<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
 			<div class='btn btn-dark dropdown-toggle float-right ml-2' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
 			<div class='dropdown-menu dropdown-menu-right p-2' id='{{home}}_add_room_dd'>
 				<form action="{% url 'new_room' home.id %}" method='post'>
@@ -15,7 +16,7 @@
 				</form>
 			</div>
 			<a href="{% url 'new_garage_sale' %}"><div class='btn btn-dark float-right'>Garage Sale +</div></a>
-		</div>
+		</h5>
 		<hr>
 		<div class='rooms d-flex flex-row'>
 		{% for room in home.room_set.all %}

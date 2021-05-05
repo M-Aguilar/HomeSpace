@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND, GarageSale, ForSale
+from .models import Home, Room, Inventory, Item, Food, Recipe, Ingredient, FOOD_STORAGE_IND, GarageSale, ForSale, Membership
 from .forms import HomeForm, RoomForm, ItemForm, FoodForm, RecipeForm, IngredientForm, HoldsFoodForm, InventoryForm, GarageSaleForm, ItemImageForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django.core import serializers
 from django.http import HttpResponseRedirect, Http404, JsonResponse
@@ -18,7 +20,7 @@ def index(request):
 
 @login_required
 def dashboard(request):
-	homes = Home.objects.filter(owner=request.user)
+	homes = Home.objects.filter(Q(owner=request.user)|Q(membership__member=request.user))
 	context = {'homes':homes}
 	if not homes:
 		context['home_form'] = HomeForm()
@@ -29,10 +31,13 @@ def dashboard(request):
 def about(request):
 	return render(request,'home_space/about.html')
 
+def isMember(user, home):
+	return Membership.objects.filter(Q(member=user),Q(household=home))
+
 @login_required
 def room(request, room_id):
 	space = get_object_or_404(Room,id=room_id)
-	if space.home.owner != request.user:
+	if space.home.owner != request.user and not isMember(request.user, space.home):
 		raise Http404
 	context = {'room': space, 'i_form': InventoryForm()}
 	return render(request,'home_space/room.html', context)
@@ -50,7 +55,7 @@ def new_home(request):
 @login_required
 def new_room(request, home_id):
 	home = Home.objects.get(id=home_id)
-	if request.method == 'POST':
+	if request.method == 'POST' and (request.user == home.owner or isMember(request.user,home)):
 		form = RoomForm(data=request.POST)
 		if form.is_valid():
 			new_space = form.save(commit=False)
@@ -69,11 +74,14 @@ def delete_room(request, room_id):
 	if request.user == room.home.owner:
 		room.delete()
 		return HttpResponseRedirect(reverse('dashboard'))
+	else:
+		messages.error(request, "Sorry you don't have permission to do that.")
+		return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def edit_room(request, room_id):
 	space = get_object_or_404(Room,id=room_id)
-	if space.home.owner != request.user:
+	if space.home.owner != request.user and not isMember(request.user, space.home):
 		raise Http404
 	if request.method != 'POST':
 		form = RoomForm(instance=space)
@@ -89,7 +97,7 @@ def edit_room(request, room_id):
 @login_required
 def inventory(request, inventory_id):
 	inv = get_object_or_404(Inventory, id=inventory_id)
-	if request.user != inv.space.home.owner:
+	if request.user != inv.space.home.owner and not isMember(request.user, inv.space.home):
 		raise Http404
 	context = {'inv': inv}
 	return render(request, 'home_space/inventory.html', context)
@@ -97,7 +105,7 @@ def inventory(request, inventory_id):
 @login_required
 def new_inventory(request, room_id):
 	room = get_object_or_404(Room, id=room_id)
-	if room.home.owner == request.user:
+	if room.home.owner == request.user or isMember(request.user, room.home):
 		if request.method =='POST':
 			form  = InventoryForm(data=request.POST)
 			if form.is_valid():
