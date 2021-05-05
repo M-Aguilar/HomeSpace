@@ -8,8 +8,13 @@
     {% endif %}
     <div class='rooms d-flex flex-row mt-3'>
 		{% for item in inv.item_set.all %}
-		<div class="card col-3 p-0">
-			<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+		<div class="col-3 p-0 mx-2">
+			<div class="card">
+				{% if item.itemimage_set.all %}
+				<div class="card-body"><img src="{{item.itemimage_set.first.image.url}}" width="100%" height="auto"></div>
+				{% endif %}
+				<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+			</div>
 		</div>
 		{% empty %}
 		<div>There is nothing here</div>

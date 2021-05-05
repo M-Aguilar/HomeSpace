@@ -7,6 +7,6 @@
         <a class="btn btn-dark" href="{% url 'new_item_image' item.id %}">Add Image</a>
     {% endif %}
     <div><h4>Description</h4>{{ item.info }}</div>
-    <img src="{{item.itemimage_set.all.first.image.url}}" height="100px" alt="No Image">
+    <img src="{{item.itemimage_set.first.image.url}}" width="100%" alt="No Image">
 </div>
 {% endblock %}
