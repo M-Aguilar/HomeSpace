@@ -302,12 +302,10 @@ def new_item_image(request, item_id):
 		data={'item':item}
 		form = ItemImageForm(initial=data)
 	else:
-		form = ItemImageForm(data=request.POST)
+		form = ItemImageForm(data=request.POST, files=request.FILES)
 		if form.is_valid():
 			new_image = form.save(commit=False)
 			new_image.item = item
-			new_image.save()
-			new_image.image = request.FILES['image']
 			new_image.save()
 			messages.success(request, 'The Image has been added')
 			return HttpResponseRedirect(reverse('item', args=[item.id]))
