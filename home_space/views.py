@@ -302,6 +302,9 @@ def new_item_image(request, item_id):
 		data={'item':item}
 		form = ItemImageForm(initial=data)
 	else:
+		if not request.FILES:
+			messages.error(request,'No Image was provided')
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 		form = ItemImageForm(data=request.POST, files=request.FILES)
 		if form.is_valid():
 			new_image = form.save(commit=False)
