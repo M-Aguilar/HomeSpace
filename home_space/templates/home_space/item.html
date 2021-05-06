@@ -3,10 +3,15 @@
 {% block content %}
 <div>
     <h3>{{ item }}</h3>
-    {% if request.user.is_authenticated and item.space.space.home.owner == request.user %}
+    {% if request.user.is_authenticated and request.user == item.space.space.home.owner or ismember%}
         <a class="btn btn-dark" href="{% url 'new_item_image' item.id %}">Add Image</a>
+        <a href="{% url 'edit_item' item.id %}" class="btn btn-dark">Edit Item</a>
     {% endif %}
     <div><h4>Description</h4>{{ item.info }}</div>
-    <img src="{{item.itemimage_set.first.image.url}}" width="100%" alt="No Image">
+    <div class="d-flex row">
+    {% for image in item.itemimage_set.all %}
+        <div class="col-3"><img src="{{ image.image.url }}" width="100%" alt="No Image"></div>
+    {% endfor %}
+    </div>
 </div>
 {% endblock %}

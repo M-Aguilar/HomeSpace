@@ -20,7 +20,7 @@
 		{% endif %}
 		<a href="{% url 'delete_room' room.id %}"><i class="glyphicon glyphicon-trash"></i> Delete Room</a>
 	</div>
-	<div class='rooms d-flex flex-row'>
+	<div class='rooms d-flex row'>
 		{% for inv in room.inventory_set.all %}
 			{% include 'home_space/inventory_tile.html' %}
 		{% empty %}

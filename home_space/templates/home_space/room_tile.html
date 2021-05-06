@@ -1,14 +1,16 @@
-<div class='card col-4 px-0 mx-1'>
-	<div class='card-header'>
-		<h4><a href="{% url 'room' room.id %}">{{ room.name }}</a></h4>
-	</div>
-	<div id='{{ room.id }}' class='card-body'>
-		<div class='list-group list-group-flush mb-0'>
-			<div class='list-group-item'>Inventories: {{ room.inventory_set.count }}</div>
-			<div class='list-group-item'>Items: {{ room.inventory_set.first.item_set.all.count }}</div>
-			{% if room.inventory_set.first.holds_food %}
+<div class='col-12 col-sm-6 col-md-4 px-0 mb-3'>
+	<div class='card mx-1'>
+		<div class='card-header'>
+			<h4><a href="{% url 'room' room.id %}">{{ room.name }}</a></h4>
+		</div>
+		<div id='{{ room.id }}' class='card-body'>
+			<div class='list-group list-group-flush mb-0'>
+				<div class='list-group-item'>Inventories: {{ room.inventory_set.count }}</div>
+				<div class='list-group-item'>Items: {{ room.inventory_set.first.item_set.all.count }}</div>
+				{% if room.inventory_set.first.holds_food %}
 				<div class='list-group-item'>Food: {{room.inventory_set.first.food_set.all.count }}</div>
-			{% endif %}
+				{% endif %}
+			</div>
 		</div>
 	</div>
 </div>

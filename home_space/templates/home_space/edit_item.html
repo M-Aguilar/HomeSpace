@@ -6,8 +6,18 @@
 	<form action="{% url 'edit_item' item.id %}" method='post'>
 		{% csrf_token %}
 		{% bootstrap_form form %}
-		<button name="submit">Update</button>
+		<button class="btn btn-dark" name="submit">Update</button>
+		<a class="btn btn-dark" href="{% url 'delete_item' item.id %}">Delete</a>
 	</form>
-	<a href="{% url 'delete_item' item.id %}"><button>Delete</button></a>
+	{% if item.itemimage_set.all.count > 0 %}
+	<h3>Images</h3>
+	{% endif %}
+	<div class="d-flex row">
+	{% for image in item.itemimage_set.all %}
+		<div class="col-3">
+			<a href=""><img src="{{ image.image.url }}" width="100%"></a>
+		</div>
+	{% endfor %}
+	</div>
 </div>
 {% endblock %}

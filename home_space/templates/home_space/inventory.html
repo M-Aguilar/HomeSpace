@@ -1,19 +1,22 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+<div>
     <h4>{{ inv }}</h4>
     <a class="btn btn-dark" href="{% url 'new_item' inv.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
     {% if inv.holds_food %}
     <a class="btn btn-dark" href="{% url 'new_food' inv.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
     {% endif %}
-    <div class='rooms d-flex flex-row mt-3'>
+    <div class='rooms d-flex row mt-3'>
 		{% for item in inv.item_set.all %}
-		<div class="col-3 p-0 mx-2">
-			<div class="card">
-				{% if item.itemimage_set.all %}
-				<div class="card-body"><img src="{{item.itemimage_set.first.image.url}}" width="100%" height="auto"></div>
-				{% endif %}
-				<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+		<div class="col-12 col-sm-6 col-md-4 col-lg-3 p-0 mb-3">
+			<div class="mx-2">
+				<div class="card">
+					{% if item.itemimage_set.all %}
+					<div class="card-body"><a href="{% url 'item' item.id %}"><img src="{{item.itemimage_set.first.image.url}}" width="100%" height="auto"></a></div>
+					{% endif %}
+					<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+				</div>
 			</div>
 		</div>
 		{% empty %}
@@ -27,4 +30,5 @@
 		    {% endfor %}
         {% endif %}
 	</div>
+</div>
 {% endblock %}

@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.core import serializers
@@ -192,9 +191,10 @@ def edit_food(request, food):
 def item(request, item_id):
 	item = get_object_or_404(Item, id=item_id)
 	forsale = item.forsale_set.all()
+	ismember = isMember(request.user,item.space.space.home)
 	if request.user != item.space.space.home.owner and not forsale:
 		raise Http404
-	context = {'item':item,'forsale':forsale}
+	context = {'item':item,'forsale':forsale, 'ismember': ismember}
 	return render(request, 'home_space/item.html', context)
 
 @login_required
@@ -216,7 +216,7 @@ def new_item(request, inventory_id):
 @login_required
 def edit_item(request,item):
 	item = get_object_or_404(Item,id=item)
-	if item.space.owner != request.user:
+	if item.space.space.home.owner != request.user and not isMember(request.user, item.space.space.home):
 		raise Http404
 	if request.method != 'POST':
 		form = ItemForm(instance=item)
@@ -224,7 +224,7 @@ def edit_item(request,item):
 		form = ItemForm(instance=item,data=request.POST)
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect(reverse('space',args=[item.space.id]))
+			return HttpResponseRedirect(reverse('item',args=[item.id]))
 	context = {'form':form,'item':item}
 	return render(request,'home_space/edit_item.html',context)
 

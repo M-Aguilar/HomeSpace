@@ -4,7 +4,7 @@
 {% if homes %}
 	<div>
 	{% for home in homes %}
-		<div class='pb-3 d-inline'>
+		<div class='pb-3 d-inline mb-2'>
 			<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
 			<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
 			<div class='btn btn-dark dropdown-toggle float-right ml-2' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
@@ -15,10 +15,11 @@
 					<button name="submit" class="btn btn-dark">Add Room</button>
 				</form>
 			</div>
-			<a href="{% url 'new_garage_sale' %}"><div class='btn btn-dark float-right'>Garage Sale +</div></a>
-		</h5>
+			<a href="{% url 'new_garage_sale' %}" class='btn btn-dark float-right'>Garage Sale +</a>
+		</div>
+		<br>
 		<hr>
-		<div class='rooms d-flex flex-row'>
+		<div class='rooms d-flex row mt-4'>
 		{% for room in home.room_set.all %}
 			{% include 'home_space/room_tile.html' %}
 		{% empty %}
@@ -29,7 +30,7 @@
 	{% endfor %}
 	</div>
 {% else %}
-	<h3>There is no home setup yet. Add one here</a></h3>
+	<h3>There is no home setup yet. Add one here</h3>
 	<div>
 		<form action="{% url 'new_home' %}" method='post'>
 			{% csrf_token %}
