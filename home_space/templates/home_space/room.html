@@ -1,31 +1,56 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+<div class="modal" id="delete_room" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5>Delete Image</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			Are you sure you want to do this?
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-dark" href="{% url 'delete_room' room.id %}">Confirm</a>
+				<button type="button" class="btn btn-dark" data-dismiss="modal" aria-label="Close">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div>
-	<h2>{{ room }}{% if room.inventory_set.first.holds_food %} <i class="glyphicon glyphicon-cutlery"></i>{% endif %}</h2>
+	<h3 class="mt-0"><a class="text-dark" href="{% url 'dashboard' %}">{{room.home}}</a> / {{ room }}{% if room.inventory_set.first.holds_food %} <i class="glyphicon glyphicon-cutlery"></i>{% endif %}</h3>
+	<div>
+		<div class="btn-group btn-group-sm">
+			<div class="dropdown float-left">
+				<a href='' class='dropdown-toggle btn btn-dark btn-sm' id='add_inv' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-briefcase"></i> Add Inventory</a>
+				<div class='dropdown-menu p-2' aria-labelledby='add_inv'>
+					<form action="{% url 'new_inventory' room.id %}" method='post'>
+						{% csrf_token %}
+						{% bootstrap_form i_form %}
+						<button name="submit" class="btn btn-dark">Add Inventory</button>
+					</form>
+				</div>
+			</div>
+			<a class="btn btn-dark" href="{% url 'edit_room' room.id %}"><i class="glyphicon glyphicon-edit"></i> Edit Room</a>
+			<a class="btn btn-dark" href="{% url 'new_item' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
+			{% if room.inventory_set.first.holds_food %}
+			<a class="btn btn-dark" href="{% url 'new_food' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
+			{% endif %}
+			<div class="btn btn-dark" data-toggle="modal" data-target="#delete_room"><i class="glyphicon glyphicon-trash"></i> Delete Room</></div>
+		</div>
+	</div>
 	<hr>
 	<div>
-		<a href='' class='dropdown-toggle d-inline' type='button' id='add_inv' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-briefcase"></i> Add Inventory</a>
-		<div class='dropdown-menu dropdown-menu-left p-2' id='add_inv'>
-			<form action="{% url 'new_inventory' room.id %}" method='post'>
-				{% csrf_token %}
-				{% bootstrap_form i_form %}
-				<button name="submit" class="btn btn-dark">Add Inventory</button>
-			</form>
+		<div class='rooms d-flex row'>
+			{% for inv in room.inventory_set.all %}
+				{% include 'home_space/inventory_tile.html' %}
+			{% empty %}
+			<div>There is nothing here</div>
+			{% endfor %}
 		</div>
-		<a href="{% url 'edit_room' room.id %}"><i class="glyphicon glyphicon-edit"></i> Edit Room</a>
-		<a href="{% url 'new_item' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
-		{% if room.inventory_set.first.holds_food %}
-		<a href="{% url 'new_food' room.inventory_set.first.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
-		{% endif %}
-		<a href="{% url 'delete_room' room.id %}"><i class="glyphicon glyphicon-trash"></i> Delete Room</a>
-	</div>
-	<div class='rooms d-flex row'>
-		{% for inv in room.inventory_set.all %}
-			{% include 'home_space/inventory_tile.html' %}
-		{% empty %}
-		<div>There is nothing here</div>
-		{% endfor %}
 	</div>
 </div>
 {% endblock %}

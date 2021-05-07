@@ -1,17 +1,37 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+{% if '/garage_sale/' in request.META.HTTP_REFERER and not request.user.is_authenticated %}
+<h4 class="mt-0"><a class="text-dark" href="{{ request.META.HTTP_REFERER }}"><i class="glyphicon glyphicon-arrow-left"></i>Back to Sale</a></h4>
+{% elif request.user.is_authenticated and request.user == item.space.space.home.owner or ismember %}
+<h5 class="mt-0"><a class="text-dark" href="{% url 'dashboard' %}">{{ item.space.space.home }}</a> / <a class="text-dark" href="{% url 'room' item.space.space.id %}">{{item.space.space}}</a> / <a class="text-dark" href="{% url 'inventory' item.space.id %}">{{ item.space }}</a> / {{item}}</h5>
+{% endif %}
+<div class="modal" id="popupImage" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="modalImage" src="" width="100%" alt="No Image">
+            </div>
+        </div>
+    </div>
+</div>
 <div>
-    <h3>{{ item }}</h3>
-    {% if request.user.is_authenticated and request.user == item.space.space.home.owner or ismember%}
+    <h2 class="mt-0">{{ item }}</h2>
+    {% if request.user.is_authenticated and request.user == item.space.space.home.owner or ismember %}
         <a class="btn btn-dark" href="{% url 'new_item_image' item.id %}">Add Image</a>
         <a href="{% url 'edit_item' item.id %}" class="btn btn-dark">Edit Item</a>
     {% endif %}
     <div><h4>Description</h4>{{ item.info }}</div>
+    <hr>
     <div class="d-flex row">
     {% for image in item.itemimage_set.all %}
-        <div class="col-12 col-sm-6 col-md-3"><img src="{{ image.image.url }}" width="100%" alt="No Image"></div>
+        <div class="col-12 col-sm-6 col-md-3"><img class="itemimage" data-toggle="modal" data-target="#popupImage" src="{{ image.image.url }}" width="100%" alt="No Image"></div>
     {% endfor %}
     </div>
 </div>
+<script>
+$("img.itemimage").on('click', function() {
+    $('img#modalImage').attr('src', $(this).attr('src'));
+});
+</script>
 {% endblock %}

@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% block content %}
 <div>
-    <h4>{{ inv }}</h4>
+    <h4 class="mt-0"><a class="text-dark" href="{% url 'dashboard' %}">{{ inv.space.home }}</a> / <a class="text-dark" href="{% url 'room' inv.space.id %}">{{inv.space}}</a> / {{ inv }}</h4>
     <a class="btn btn-dark" href="{% url 'new_item' inv.id %}"><i class="glyphicon glyphicon-plus-sign"></i> Add Item</a>
     {% if inv.holds_food %}
     <a class="btn btn-dark" href="{% url 'new_food' inv.id %}"><i class="glyphicon glyphicon-shopping-cart"></i> Add Food</a>
@@ -15,7 +15,7 @@
 					{% if item.itemimage_set.all.count > 0  %}
 					<div class="card-body"><a href="{% url 'item' item.id %}"><img src="{{item.itemimage_set.first.image.url}}" width="100%" height="auto"></a></div>
 					{% endif %}
-					<div class='card-header'><a href="{% url 'item' item.id %}">{{ item }}</a></div>
+					<div class='card-header'><a class="text-dark" href="{% url 'item' item.id %}">{{ item }}</a></div>
 				</div>
 			</div>
 		</div>

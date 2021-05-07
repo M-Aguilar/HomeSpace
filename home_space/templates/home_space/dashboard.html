@@ -2,23 +2,28 @@
 {% load bootstrap4 %}
 {% block content %}
 {% if homes %}
-	<div>
 	{% for home in homes %}
-		<div class='pb-3 d-inline mb-2'>
-			<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
-			<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
-			<div class='btn btn-dark dropdown-toggle float-right ml-2' id='{{home}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</div>
-			<div class='dropdown-menu dropdown-menu-right p-2' id='{{home}}_add_room_dd'>
-				<form action="{% url 'new_room' home.id %}" method='post'>
-					{% csrf_token %}
-					{% bootstrap_form room_form %}
-					<button name="submit" class="btn btn-dark">Add Room</button>
-				</form>
+	<div class='pb-3 d-inline mb-2'>
+		<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
+		<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
+	</div>
+	<div>
+		<div class="btn-group btn-group-sm w-100">
+			<a href="#" class='btn btn-dark dropdown-toggle' id='{{home.id}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</a>
+			<div class="dropdown">
+				<div class='dropdown-menu p-2' aria-labelledby="{{home.id}}_add_room_dd">
+					<form action="{% url 'new_room' home.id %}" method='post'>
+						{% csrf_token %}
+						{% bootstrap_form room_form %}
+						<button name="submit" class="btn btn-dark">Add Room</button>
+					</form>
+				</div>
 			</div>
-			<a href="{% url 'new_garage_sale' %}" class='btn btn-dark float-right'>Garage Sale +</a>
+			<a href="{% url 'new_garage_sale' %}" class='btn btn-dark'>Garage Sale +</a>
 		</div>
-		<br>
-		<hr>
+	</div>
+	<hr>
+	<div>
 		<div class='rooms d-flex row mt-4'>
 		{% for room in home.room_set.all %}
 			{% include 'home_space/room_tile.html' %}
@@ -27,8 +32,8 @@
 			<hr>
 		{% endfor %}
 		</div>
-	{% endfor %}
 	</div>
+	{% endfor %}
 {% else %}
 	<h3>There is no home setup yet. Add one here</h3>
 	<div>

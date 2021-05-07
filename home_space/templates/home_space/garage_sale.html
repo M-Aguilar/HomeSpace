@@ -1,7 +1,11 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
+{% block meta %}
+<meta property="og:title" context="{{sale.name}}">
+<meta property="og:image" content="{{image}}">
+{% endblock %}
 {% block content %}
-<div>
+<div class="mb-3">
     <h2>{{ sale }}</h2>
     {% if request.user.is_authenticated and request.user == sale.home.owner or ismember %}
         <a href="{% url 'edit_sale' sale.id %}" class="btn btn-dark">Edit Sale</a>
@@ -18,9 +22,9 @@
         <div class='col-12 col-sm-6 col-md-3 mt-3'>
             <div class='card rounded'>
                 {% if item.item.itemimage_set.all %}
-                <div class='card-body'>
+                <div class='card-body p-0'>
                     <a href="{% url 'item' item.item.id %}"">
-                        <div><img src="{{item.item.itemimage_set.first.image.url}}" width="100%" height="auto"></div>
+                        <img src="{{item.item.itemimage_set.first.image.url}}" width="100%" height="auto"></<img>
                     </a>
                 </div>
                 {% endif %}

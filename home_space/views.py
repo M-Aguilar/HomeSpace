@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-from django.db.models import Q
+from django.db.models import Q, F
 from django.template.loader import render_to_string
 from django.core import serializers
 from django.http import HttpResponseRedirect, Http404, JsonResponse
@@ -263,7 +263,8 @@ def garage_sales(request):
 def garage_sale(request, sale_id):
 	items = None
 	sale = get_object_or_404(GarageSale, id=sale_id)
-	context = {'sale': sale}
+	image = ForSale.objects.filter(Q(item__itemimage__image__isnull=False)).first().item.itemimage_set.first().image.url
+	context = {'sale': sale, 'image':image}
 	if request.user.is_authenticated:
 		items = Item.objects.filter(space__space__home__owner=request.user, forsale=None)[:5]
 		context['item_form'] = GarageSaleForm(instance=sale)
