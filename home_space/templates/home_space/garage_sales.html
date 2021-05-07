@@ -4,7 +4,7 @@
 <div>
     <div class='d-inline'>
         <h2 class='d-inline'>Garage Sales</h2>
-        {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated and request.user == sale.owner %}
         <div>
             <a href="{% url 'new_garage_sale' %}" class='btn btn-dark float-right d-inline'>New Garage Sale</a>
         </div>
@@ -18,7 +18,7 @@
             <h4><a href="{% url 'garage_sale' sale.id %}">{{ sale }}</a></h4>
         </div>
         <div class='card-body'>
-            <p>Items: {{ sale.item_set.all.count }}</p>
+            <p>Items: {{ sale.forsale_set.all.count }}</p>
         </div>
     </div>
     {% empty %}

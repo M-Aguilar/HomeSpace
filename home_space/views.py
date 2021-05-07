@@ -260,14 +260,16 @@ def garage_sales(request):
 	context = {'sales':sales}
 	return render(request, 'home_space/garage_sales.html', context)
 
-@login_required
 def garage_sale(request, sale_id):
-	items = Item.objects.filter(space__space__home__owner=request.user, forsale=None)[:5]
+	items = None
+	sale = get_object_or_404(GarageSale, id=sale_id)
+	ismember = isMember(request.user, sale.home)
+	context = {'sale': sale}
+	context['ismember'] = ismember
 	if request.user.is_authenticated:
-		sale = get_object_or_404(GarageSale, id=sale_id)
-	else:
-		raise Http404
-	context = {'sale': sale, 'item_form': GarageSaleForm(instance=sale), 'items':items}
+		items = Item.objects.filter(space__space__home__owner=request.user, forsale=None)[:5]
+		context['item_form'] = GarageSaleForm(instance=sale)
+	context['items'] = items
 	return render(request, 'home_space/garage_sale.html', context)
 
 @login_required
