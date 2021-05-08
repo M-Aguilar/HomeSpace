@@ -3,7 +3,7 @@
 {% block content %}
 <div>
     <h2 class="mt-0">Edit {{ sale }}</h2>
-    <form action="{% url 'edit_sale' sale.id %}" mothod='post'>
+    <form action="{% url 'edit_sale' sale.id %}" method='post'>
         {% csrf_token %}
         {% bootstrap_form form %}
         <button class='btn btn-dark' name='submit'>Submit</div>

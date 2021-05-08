@@ -179,7 +179,7 @@ def edit_food(request, food):
 	if request.method != 'POST':
 		form = FoodForm(instance=food)
 	else:
-		form = FoodForm(data=request.POST)
+		form = FoodForm(instance=food, data=request.POST)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect(reverse('space',args=[food.space.id]))
@@ -319,12 +319,12 @@ def new_item_image(request, item_id):
 
 @login_required
 def edit_sale(request, sale_id):
-	if request.user.is_authenticated:
-		sale = get_object_or_404(GarageSale, id=sale_id)
+	sale = get_object_or_404(GarageSale, id=sale_id)
+	if request.user.is_authenticated and request.user == sale.home.owner or isMember(request.user, sale.home):
 		if request.method != 'POST':
 			form = GarageSaleForm(instance=sale)
 		else:
-			form = GarageSaleForm(data=request.POST)
+			form = GarageSaleForm(instance=sale, data=request.POST)
 			if form.is_valid():
 				form.save()
 				return HttpResponseRedirect(reverse('garage_sale', args=[sale.id]))
