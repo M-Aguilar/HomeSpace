@@ -1,5 +1,6 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
+{% block title %}{{inv}}{% endblock %}
 {% block content %}
 <div>
     <h4 class="mt-0"><a class="text-dark" href="{% url 'dashboard' %}">{{ inv.space.home }}</a> / <a class="text-dark" href="{% url 'room' inv.space.id %}">{{inv.space}}</a> / {{ inv }}</h4>

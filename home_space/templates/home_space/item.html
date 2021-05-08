@@ -1,5 +1,6 @@
 {% extends 'home_space/base.html' %}
 {% load bootstrap4 %}
+{% block title %}{{item}}{% endblock %}
 {% block content %}
 {% if '/garage_sale/' in request.META.HTTP_REFERER and not request.user.is_authenticated %}
 <h4 class="mt-0"><a class="text-dark" href="{{ request.META.HTTP_REFERER }}"><i class="glyphicon glyphicon-arrow-left"></i>Back to Sale</a></h4>
