@@ -8,10 +8,10 @@
 		<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
 		<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
 	</div>
-	<div>
-		<div class="btn-group btn-group-sm w-100">
+	<div class="btn-group">
+		<div>
 			<a href="#" class='btn btn-dark dropdown-toggle' id='{{home.id}}_add_room_dd' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus-sign"></i> Room</a>
-			<div class="dropdown">
+			<div class="dropdown float-left">
 				<div class='dropdown-menu p-2' aria-labelledby="{{home.id}}_add_room_dd">
 					<form action="{% url 'new_room' home.id %}" method='post'>
 						{% csrf_token %}
@@ -23,7 +23,6 @@
 			<a href="{% url 'new_garage_sale' %}" class='btn btn-dark'>Garage Sale +</a>
 		</div>
 	</div>
-	<hr>
 	<div>
 		<div class='rooms d-flex row mt-4'>
 		{% for room in home.room_set.all %}
