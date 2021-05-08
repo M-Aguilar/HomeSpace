@@ -9,14 +9,12 @@
         <div>
             <a href="{% url 'new_garage_sale' %}" class='btn btn-dark float-right d-inline'>New Garage Sale</a>
         </div>
-        <br>
-        <hr>
         {% endif %}
     </div>
     {% for sale in sales %}
-    <div class='card my-2'>
+    <div class='card my-3'>
         <div class='card-header'>
-            <h4><a href="{% url 'garage_sale' sale.id %}">{{ sale }}</a></h4>
+            <h4><a class="text-dark" href="{% url 'garage_sale' sale.id %}">{{ sale }}</a></h4>
         </div>
         <div class='card-body'>
             <p>Items: {{ sale.forsale_set.all.count }}</p>

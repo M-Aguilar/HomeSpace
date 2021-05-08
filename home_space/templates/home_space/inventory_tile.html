@@ -1,7 +1,7 @@
 <div class="col-12 col-sm-6 col-md-4 px-0 mb-3">
 	<div class='card mx-1'>
 		<div class='card-header'>
-			<h4><a href="{% url 'inventory' inv.id %}">{{ inv.name }}</a></h4>
+			<h4><a class="text-dark" href="{% url 'inventory' inv.id %}">{{ inv.name }}</a></h4>
 		</div>
 		<div id='{{ inv.id }}' class='card-body'>
 			<div class='list-group list-group-flush mb-0'>

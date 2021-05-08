@@ -5,7 +5,7 @@
 {% if homes %}
 	{% for home in homes %}
 	<div class='pb-3 d-inline mb-2'>
-		<h2 class='d-inline'>{{ home }} <i class="glyphicon glyphicon-home"></i></h2>
+		<h2 class='d-inline'><i class="glyphicon glyphicon-home"></i> {{ home }}</h2>
 		<h5>Owner: {{ home.owner }} - Members: {% for member in home.membership_set.all %}{{ member.member }}{% endfor %}</h5>
 	</div>
 	<div class="btn-group">
@@ -16,7 +16,7 @@
 					<form action="{% url 'new_room' home.id %}" method='post'>
 						{% csrf_token %}
 						{% bootstrap_form room_form %}
-						<button name="submit" class="btn btn-dark">Add Room</button>
+						<button name="submit" class="btn btn-dark mt-0">Add Room</button>
 					</form>
 				</div>
 			</div>
