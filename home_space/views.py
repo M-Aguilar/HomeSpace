@@ -27,7 +27,7 @@ def dashboard(request):
 		context['room_form'] = RoomForm()
 	return render(request, 'home_space/dashboard.html', context)
 
-def about(request):
+def about_hh(request):
 	return render(request,'home_space/about.html')
 
 def isMember(user, home):

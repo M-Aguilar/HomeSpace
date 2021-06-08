@@ -44,5 +44,5 @@ urlpatterns = [
     path('new_ingredient',views.new_ingredient,name='new_ingredient'),
 
     #ABOUT
-    path('about',views.about,name='about'),
+    path('about_homehelp',views.about_hh,name='about_hh'),
 ]
