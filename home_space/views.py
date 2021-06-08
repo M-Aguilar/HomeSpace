@@ -11,7 +11,7 @@ from django.core import serializers
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
 
-def homehelp(request):
+def hh_index(request):
 	if request.user.is_authenticated:
 		response = redirect('dashboard')
 		return response
