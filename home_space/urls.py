@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('homehelp', views.hh_index, name='hh_index'),
     path('dashboard',views.dashboard,name='dashboard'),
 
     #SPACE PAGES
